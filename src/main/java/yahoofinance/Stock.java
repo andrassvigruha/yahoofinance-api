@@ -2,8 +2,11 @@ package yahoofinance;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,10 @@ import yahoofinance.quotes.stock.StockQuote;
 import yahoofinance.quotes.csv.StockQuotesData;
 import yahoofinance.quotes.csv.StockQuotesRequest;
 import yahoofinance.quotes.stock.StockStats;
+import yahoofinance.quotesummary.query2v11.QuoteSummaryData;
+import yahoofinance.quotesummary.query2v11.QuoteSummaryDataStore;
+import yahoofinance.quotesummary.query2v11.QuoteSummaryModule;
+import yahoofinance.quotesummary.query2v11.QuoteSummaryQuery2V11Request;
 
 /**
  *
@@ -43,6 +50,7 @@ public class Stock {
     private List<HistoricalQuote> history;
     private List<HistoricalDividend> dividendHistory;
     private List<HistoricalSplit> splitHistory;
+    private final QuoteSummaryDataStore quoteSummaryDataStore = new QuoteSummaryDataStore();
     
     public Stock(String symbol) {
         this.symbol = symbol;
@@ -481,7 +489,33 @@ public class Stock {
     public void setSplitHistory(List<HistoricalSplit> splitHistory) {
         this.splitHistory = splitHistory;
     }
-    
+
+    public <T> QuoteSummaryData<T> getQuoteSummaryData(QuoteSummaryModule module) throws IOException {
+        if (!quoteSummaryDataStore.hasData(module)) {
+            requestQuoteSummaryData(Arrays.asList(module));
+        }
+        return quoteSummaryDataStore.getData(module);
+    }
+
+    public Map<QuoteSummaryModule, QuoteSummaryData<?>> getQuoteSummaryData(QuoteSummaryModule... modules) throws IOException {
+        List<QuoteSummaryModule> modulesToRequest = Arrays.stream(modules).
+            filter(module -> !quoteSummaryDataStore.hasData(module)).
+            collect(Collectors.
+                toList());
+        if (!modulesToRequest.isEmpty()) {
+            requestQuoteSummaryData(modulesToRequest);
+        }
+        return quoteSummaryDataStore.getData(modules);
+    }
+
+    private void requestQuoteSummaryData(List<QuoteSummaryModule> modules) throws IOException {
+        if (YahooFinance.QUOTES_QUERY1V7_ENABLED.equalsIgnoreCase("true")) {
+            QuoteSummaryQuery2V11Request quoteSummaryRequest = new QuoteSummaryQuery2V11Request(this.symbol, modules);
+            Map<QuoteSummaryModule, QuoteSummaryData<?>> result = quoteSummaryRequest.getResult();
+            quoteSummaryDataStore.addData(result);
+        }
+    }
+
     public String getSymbol() {
         return symbol;
     }

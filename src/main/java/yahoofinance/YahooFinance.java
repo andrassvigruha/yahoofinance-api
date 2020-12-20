@@ -47,6 +47,7 @@ public class YahooFinance {
     public static final String QUOTES_BASE_URL = System.getProperty("yahoofinance.baseurl.quotes", "http://download.finance.yahoo.com/d/quotes.csv");
     public static final String QUOTES_QUERY1V7_BASE_URL = System.getProperty("yahoofinance.baseurl.quotesquery1v7", "https://query1.finance.yahoo.com/v7/finance/quote");
     public static final String QUOTES_QUERY1V7_ENABLED = System.getProperty("yahoofinance.quotesquery1v7.enabled", "true");
+    public static final String QUOTE_SUMMARY_QUERY1V11_BASE_URL = System.getProperty("yahoofinance.baseurl.quotesquery1v11", "https://query1.finance.yahoo.com/v11/finance/quoteSummary");
     public static final String HISTQUOTES_BASE_URL = System.getProperty("yahoofinance.baseurl.histquotes", "https://ichart.yahoo.com/table.csv");
     public static final String HISTQUOTES2_ENABLED = System.getProperty("yahoofinance.histquotes2.enabled", "true");
     public static final String HISTQUOTES2_BASE_URL = System.getProperty("yahoofinance.baseurl.histquotes2", "https://query1.finance.yahoo.com/v7/finance/download/");
@@ -55,7 +56,7 @@ public class YahooFinance {
     public static final String HISTQUOTES2_CRUMB_URL = System.getProperty("yahoofinance.crumburl.histquotes2", "https://query1.finance.yahoo.com/v1/test/getcrumb");
     public static final String HISTQUOTES2_CRUMB = System.getProperty("yahoofinance.crumb", "");
     public static final String HISTQUOTES2_COOKIE = System.getProperty("yahoofinance.cookie", "");
-    public static final String HISTQUOTES2_COOKIE_NAMESPACE = System.getProperty("yahoofinance.cookie.namespace", "yahoo");
+    public static final String HISTQUOTES2_COOKIE_NAMESPACE = System.getProperty("yahoofinance.cookie.namespace", "api.yahoo");
     public static final String HISTQUOTES2_COOKIE_AGREE = System.getProperty("yahoofinance.cookie.agree", "agree");
     public static final String HISTQUOTES2_COOKIE_OATH_URL = System.getProperty("yahoofinance.cookie.oathurl", "https://guce.oath.com/consent");
     public static final String HISTQUOTES2_COOKIE_OATH_HOST = System.getProperty("yahoofinance.cookie.oathhost", "guce.oath.com");
@@ -412,5 +413,5 @@ public class YahooFinance {
         }
         return stocks;
     }
-    
+
 }
