@@ -1,9 +1,9 @@
 package yahoofinance.quotesummary.query2v11;
 
+import yahoofinance.quotesummary.balancesheet.HistoricalBalanceSheetParser;
+import yahoofinance.quotesummary.cashflowstatement.HistoricalCashFlowStatementParser;
 import yahoofinance.quotesummary.earnings.HistoricalEarningsParser;
 import yahoofinance.quotesummary.incomestatement.HistoricalIncomeStatementParser;
-
-import java.util.Arrays;
 
 /**
  * @author Andras Svigruha
@@ -20,6 +20,18 @@ public enum QuoteSummaryModule {
         protected HistoricalIncomeStatementParser createDataParser() {
             return new HistoricalIncomeStatementParser(getModuleName());
         }
+    },
+    BALANCE_SHEET_HISTORY("balanceSheetHistory") {
+        @Override
+        protected HistoricalBalanceSheetParser createDataParser() {
+            return new HistoricalBalanceSheetParser(getModuleName());
+        }
+    },
+    CASHFLOW_STATEMENT_HISTORY("cashflowStatementHistory") {
+        @Override
+        protected HistoricalCashFlowStatementParser createDataParser() {
+            return new HistoricalCashFlowStatementParser(getModuleName());
+        }
     };
 
     QuoteSummaryModule(String moduleName) {
@@ -28,7 +40,6 @@ public enum QuoteSummaryModule {
 
     private final String moduleName;
     private volatile QuoteSummaryDataParser<?> dataParser;
-    private volatile QuoteSummaryData<?> dataStore;
 
     protected abstract QuoteSummaryDataParser<?> createDataParser();
 
@@ -47,12 +58,5 @@ public enum QuoteSummaryModule {
             }
         }
         return dataParserLocal;
-    }
-
-    public static QuoteSummaryModule getModuleByName(String name) {
-        return Arrays.stream(values()).
-            filter(module -> module.getModuleName().equals(name)).
-            findFirst().
-            orElse(null);
     }
 }
